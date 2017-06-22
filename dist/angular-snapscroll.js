@@ -3,7 +3,7 @@
  * Version: 1.3.1
  * (c) 2014-2017 Joel Mukuthu
  * MIT License
- * Built on: 10-03-2017 17:26:46 GMT+0100
+ * Built on: 22-06-2017 10:56:45 GMT+0200
  **/
 
 if (typeof exports === 'object') {
@@ -112,7 +112,8 @@ angular.module('snapscroll').directive('snapscroll', [
                 snapHeight: '=?',
                 beforeSnap: '&',
                 afterSnap: '&',
-                snapAnimation: '=?'
+                snapAnimation: '=?',
+                internalScroll: '<'
             },
             controller: ['$scope', function ($scope) {
                 this.setSnapHeight = function (height) {
@@ -440,7 +441,7 @@ angular.module('snapscroll').directive('snapscroll', [
                         return true;
                     }
 
-                    if (scope.preventUp || scope.preventDown) {
+                    if (!scope.internalScroll && (scope.preventUp || scope.preventDown)) {
                         return true;
                     }
 
