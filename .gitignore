@@ -1,5 +1,6 @@
 .tmp
 .coveralls.yml
+.idea
 coverage
 node_modules
 bower_components
