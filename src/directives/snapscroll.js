@@ -36,7 +36,8 @@ angular.module('snapscroll').directive('snapscroll', [
                 snapHeight: '=?',
                 beforeSnap: '&',
                 afterSnap: '&',
-                snapAnimation: '=?'
+                snapAnimation: '=?',
+                internalScroll: '<'
             },
             controller: ['$scope', function ($scope) {
                 this.setSnapHeight = function (height) {
@@ -364,7 +365,7 @@ angular.module('snapscroll').directive('snapscroll', [
                         return true;
                     }
 
-                    if (scope.preventUp || scope.preventDown) {
+                    if (!scope.internalScroll && (scope.preventUp || scope.preventDown)) {
                         return true;
                     }
 
