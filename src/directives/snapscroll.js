@@ -393,19 +393,34 @@ angular.module('snapscroll').directive('snapscroll', [
                     }
 
                     if (!haveSnapSteps()) {
-                        scope.$apply(function () {
+                        if (scope.$$phase) {
+                            scope.$apply(function () {
+                                scope.sourceEvent = event;
+                                scope.compositeIndex = rectifyCompositeIndex(
+                                    newCompositeIndex
+                                );
+                            });
+                        }
+                        else {
                             scope.sourceEvent = event;
                             scope.compositeIndex = rectifyCompositeIndex(
                                 newCompositeIndex
                             );
-                        });
+                        }
                     }
                     else {
-                        scope.$apply(function () {
+                        if (scope.$$phase) {
+                            scope.$apply(function () {
+                                scope.sourceEvent = event;
+                                allowNextSnapAfterDelay();
+                                compositeIndexChanged(scope.compositeIndex, rectifyCompositeIndex(newCompositeIndex));
+                            });
+                        }
+                        else {
                             scope.sourceEvent = event;
                             allowNextSnapAfterDelay();
                             compositeIndexChanged(scope.compositeIndex, rectifyCompositeIndex(newCompositeIndex));
-                        });
+                        }
                     }
 
                     return true;
