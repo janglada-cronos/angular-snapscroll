@@ -3,7 +3,7 @@
  * Version: 1.3.1
  * (c) 2014-2017 Joel Mukuthu
  * MIT License
- * Built on: 25-06-2017 12:41:58 GMT+0200
+ * Built on: 25-06-2017 12:58:01 GMT+0200
  **/
 
 if (typeof exports === 'object') {
@@ -469,34 +469,19 @@ angular.module('snapscroll').directive('snapscroll', [
                     }
 
                     if (!haveSnapSteps()) {
-                        if (scope.$$phase) {
-                            scope.$apply(function () {
-                                scope.sourceEvent = event;
-                                scope.compositeIndex = rectifyCompositeIndex(
-                                    newCompositeIndex
-                                );
-                            });
-                        }
-                        else {
+                        scope.$apply(function () {
                             scope.sourceEvent = event;
                             scope.compositeIndex = rectifyCompositeIndex(
                                 newCompositeIndex
                             );
-                        }
+                        });
                     }
                     else {
-                        if (scope.$$phase) {
-                            scope.$apply(function () {
-                                scope.sourceEvent = event;
-                                allowNextSnapAfterDelay();
-                                compositeIndexChanged(scope.compositeIndex, rectifyCompositeIndex(newCompositeIndex));
-                            });
-                        }
-                        else {
+                        scope.$apply(function () {
                             scope.sourceEvent = event;
                             allowNextSnapAfterDelay();
                             compositeIndexChanged(scope.compositeIndex, rectifyCompositeIndex(newCompositeIndex));
-                        }
+                        });
                     }
 
                     return true;
