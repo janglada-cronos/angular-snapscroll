@@ -424,18 +424,18 @@ angular.module('snapscroll').directive('snapscroll', [
                         return;
                     }
                     wheelie.bind(element, {
-                        up: function (e) {
+                        up: _.throttle(function (e) {
                             e.preventDefault();
                             if (snapUp(e)) {
                                 e.stopPropagation();
                             }
-                        },
-                        down: function (e) {
+                        }, scope.snapDuration, {leading: true, trailing: false}),
+                        down: _.throttle(function (e) {
                             e.preventDefault();
                             if (snapDown(e)) {
                                 e.stopPropagation();
                             }
-                        }
+                        }, scope.snapDuration, {leading: true, trailing: false})
                     }, scope.ignoreWheelClass);
                     scope.wheelBound = true;
                 }

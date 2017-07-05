@@ -3,7 +3,7 @@
  * Version: 1.3.1
  * (c) 2014-2017 Joel Mukuthu
  * MIT License
- * Built on: 25-06-2017 12:58:01 GMT+0200
+ * Built on: 05-07-2017 11:34:29 GMT+0200
  **/
 
 if (typeof exports === 'object') {
@@ -500,18 +500,18 @@ angular.module('snapscroll').directive('snapscroll', [
                         return;
                     }
                     wheelie.bind(element, {
-                        up: function (e) {
+                        up: _.throttle(function (e) {
                             e.preventDefault();
                             if (snapUp(e)) {
                                 e.stopPropagation();
                             }
-                        },
-                        down: function (e) {
+                        }, scope.snapDuration, {leading: true, trailing: false}),
+                        down: _.throttle(function (e) {
                             e.preventDefault();
                             if (snapDown(e)) {
                                 e.stopPropagation();
                             }
-                        }
+                        }, scope.snapDuration, {leading: true, trailing: false})
                     }, scope.ignoreWheelClass);
                     scope.wheelBound = true;
                 }
