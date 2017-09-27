@@ -3,7 +3,7 @@
  * Version: 1.3.1
  * (c) 2014-2017 Joel Mukuthu
  * MIT License
- * Built on: 27-09-2017 15:46:12 GMT+0200
+ * Built on: 27-09-2017 16:22:03 GMT+0200
  **/
 
 if (typeof exports === 'object') {
@@ -525,7 +525,6 @@ angular.module('snapscroll').directive('snapscroll', [
                     function throttleFn() {
                         e.preventDefault();
                         if (snapUp(e)) {
-                            console.log('throttleWheel up');
                             e.stopPropagation();
                         }
                     }
@@ -541,7 +540,6 @@ angular.module('snapscroll').directive('snapscroll', [
                     function throttleFn() {
                         e.preventDefault();
                         if (e.deltaY > 0 && snapDown(e)) {
-                            console.log('throttleWheel down');
                             e.stopPropagation();
                         }
                     }

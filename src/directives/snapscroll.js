@@ -449,7 +449,6 @@ angular.module('snapscroll').directive('snapscroll', [
                     function throttleFn() {
                         e.preventDefault();
                         if (snapUp(e)) {
-                            console.log('throttleWheel up');
                             e.stopPropagation();
                         }
                     }
@@ -465,7 +464,6 @@ angular.module('snapscroll').directive('snapscroll', [
                     function throttleFn() {
                         e.preventDefault();
                         if (e.deltaY > 0 && snapDown(e)) {
-                            console.log('throttleWheel down');
                             e.stopPropagation();
                         }
                     }
