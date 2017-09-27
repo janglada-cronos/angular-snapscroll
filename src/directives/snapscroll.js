@@ -46,6 +46,9 @@ angular.module('snapscroll').directive('snapscroll', [
                 };
             }],
             link: function (scope, element, attributes) {
+                var mouseWheelFunctionUp;
+                var mouseWheelFunctionDown;
+
                 function getChildren() {
                     return element.children();
                 }
@@ -97,7 +100,8 @@ angular.module('snapscroll').directive('snapscroll', [
                         for (var j = innerSnapIndex; j >= 0; j--) {
                             innerScrollTop -= snapHeight;
                         }
-                    } else {
+                    }
+                    else {
                         innerScrollTop = 0;
                         for (var k = 0; k < innerSnapIndex; k++) {
                             innerScrollTop += snapHeight;
@@ -158,7 +162,8 @@ angular.module('snapscroll').directive('snapscroll', [
                             element,
                             scrollTop
                         ];
-                    } else if (isUndefined(scope.snapEasing)) {
+                    }
+                    else if (isUndefined(scope.snapEasing)) {
                         // TODO: add tests for this. Will require refactoring
                         // the default values into an object, which is a good
                         // change anyway
@@ -167,7 +172,8 @@ angular.module('snapscroll').directive('snapscroll', [
                             scrollTop,
                             scope.snapDuration
                         ];
-                    } else {
+                    }
+                    else {
                         args = [
                             element,
                             scrollTop,
@@ -179,9 +185,11 @@ angular.module('snapscroll').directive('snapscroll', [
                     var currentScrollTop = getCurrentScrollTop();
                     if (scrollTop > currentScrollTop) {
                         scope.snapDirection = 'down';
-                    } else if (scrollTop < currentScrollTop) {
+                    }
+                    else if (scrollTop < currentScrollTop) {
                         scope.snapDirection = 'up';
-                    } else {
+                    }
+                    else {
                         scope.snapDirection = 'same';
                     }
 
@@ -202,7 +210,8 @@ angular.module('snapscroll').directive('snapscroll', [
                     if (scope.preventUp || scope.preventDown) {
                         if (scope.preventDoubleSnapDelay === false) {
                             allowNextSnap();
-                        } else {
+                        }
+                        else {
                             $timeout(
                                 allowNextSnap,
                                 scope.preventDoubleSnapDelay
@@ -424,20 +433,42 @@ angular.module('snapscroll').directive('snapscroll', [
                         return;
                     }
                     wheelie.bind(element, {
-                        up: _.throttle(function (e) {
-                            e.preventDefault();
-                            if (snapUp(e)) {
-                                e.stopPropagation();
-                            }
-                        }, scope.snapDuration, {leading: true, trailing: false}),
-                        down: _.throttle(function (e) {
-                            e.preventDefault();
-                            if (snapDown(e)) {
-                                e.stopPropagation();
-                            }
-                        }, scope.snapDuration, {leading: true, trailing: false})
+                        up: throttleWheelUp,
+                        down: throttleWheelDown
                     }, scope.ignoreWheelClass);
                     scope.wheelBound = true;
+                }
+
+                function throttleWheelUp(e) {
+                    e.preventDefault();
+                    mouseWheelFunctionUp = mouseWheelFunctionUp ||
+                        _.throttle(throttleFn, scope.snapDuration, {leading: true, trailing: false});
+
+                    mouseWheelFunctionUp();
+
+                    function throttleFn() {
+                        e.preventDefault();
+                        if (snapUp(e)) {
+                            console.log('throttleWheel up');
+                            e.stopPropagation();
+                        }
+                    }
+                }
+
+                function throttleWheelDown(e) {
+                    e.preventDefault();
+                    mouseWheelFunctionDown = mouseWheelFunctionDown ||
+                        _.throttle(throttleFn, scope.snapDuration, {leading: true, trailing: false});
+
+                    mouseWheelFunctionDown();
+
+                    function throttleFn() {
+                        e.preventDefault();
+                        if (e.deltaY > 0 && snapDown(e)) {
+                            console.log('throttleWheel down');
+                            e.stopPropagation();
+                        }
+                    }
                 }
 
                 function unbindWheel() {
@@ -516,7 +547,8 @@ angular.module('snapscroll').directive('snapscroll', [
                             if ((snapHeight / 2) >= -scrollTop) {
                                 innerSnapIndex += 1;
                             }
-                        } else if ((childHeight / 2) >= -scrollTop) {
+                        }
+                        else if ((childHeight / 2) >= -scrollTop) {
                             snapIndex += 1;
                         }
                     }
@@ -532,7 +564,8 @@ angular.module('snapscroll').directive('snapscroll', [
                         if (scope.compositeIndex[0] === compositeIndex[0] &&
                             scope.compositeIndex[1] === compositeIndex[1]) {
                             snapTo(scope.compositeIndex);
-                        } else {
+                        }
+                        else {
                             scope.$apply(function () {
                                 scope.compositeIndex = compositeIndex;
                             });
@@ -542,7 +575,8 @@ angular.module('snapscroll').directive('snapscroll', [
                     scrollie.stop(element);
                     if (scope.scrollDelay === false) {
                         snapFromSrollTop();
-                    } else {
+                    }
+                    else {
                         $timeout.cancel(scope.scrollPromise);
                         scope.scrollPromise = $timeout(
                             function () {
@@ -637,7 +671,8 @@ angular.module('snapscroll').directive('snapscroll', [
                     var scrollDelay = attributes.scrollDelay;
                     if (scrollDelay === 'false') {
                         scope.scrollDelay = false;
-                    } else {
+                    }
+                    else {
                         scrollDelay = parseInt(scrollDelay, 10);
                         if (isNaN(scrollDelay)) {
                             scrollDelay = defaultSnapscrollScrollDelay;
@@ -650,7 +685,8 @@ angular.module('snapscroll').directive('snapscroll', [
                     );
                     if (preventDoubleSnapDelay === 'false') {
                         scope.preventDoubleSnapDelay = false;
-                    } else {
+                    }
+                    else {
                         preventDoubleSnapDelay = parseInt(
                             preventDoubleSnapDelay,
                             10
@@ -666,7 +702,8 @@ angular.module('snapscroll').directive('snapscroll', [
                     var snapEasing = attributes.snapEasing;
                     if (isDefined(snapEasing)) {
                         scope.snapEasing = scope.$parent.$eval(snapEasing);
-                    } else if (isFunction(defaultSnapscrollScrollEasing)) {
+                    }
+                    else if (isFunction(defaultSnapscrollScrollEasing)) {
                         scope.snapEasing = defaultSnapscrollScrollEasing;
                     }
 
@@ -719,7 +756,8 @@ angular.module('snapscroll').directive('snapscroll', [
                             bindScroll();
                             bindWheel();
                             bindArrowKeys();
-                        } else {
+                        }
+                        else {
                             unwatchCompositeIndex();
                             unwatchSnapIndex();
                             unwatchSnapHeight();
