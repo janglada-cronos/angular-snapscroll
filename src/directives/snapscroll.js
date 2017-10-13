@@ -46,8 +46,7 @@ angular.module('snapscroll').directive('snapscroll', [
                 };
             }],
             link: function (scope, element, attributes) {
-                var mouseWheelFunctionUp;
-                var mouseWheelFunctionDown;
+                var lethargy = new Lethargy();
 
                 function getChildren() {
                     return element.children();
@@ -433,40 +432,32 @@ angular.module('snapscroll').directive('snapscroll', [
                         return;
                     }
                     wheelie.bind(element, {
-                        up: throttleWheelUp,
-                        down: throttleWheelDown
+                        up: function (e) {
+                            e.preventDefault();
+                            if (lethargy.check(e) !== false) {
+                                // console.log('NOT letharged up!!');
+                                if (snapUp(e)) {
+                                    e.stopPropagation();
+                                }
+                            } else {
+                                // console.log('letharged up!!');
+                                e.stopPropagation();
+                            }
+                        },
+                        down: function (e) {
+                            e.preventDefault();
+                            if (lethargy.check(e) !== false) {
+                                // console.log('NOT letharged down!!');
+                                if (snapDown(e)) {
+                                    e.stopPropagation();
+                                }
+                            } else {
+                                // console.log('letharged down!!');
+                                e.stopPropagation();
+                            }
+                        }
                     }, scope.ignoreWheelClass);
                     scope.wheelBound = true;
-                }
-
-                function throttleWheelUp(e) {
-                    e.preventDefault();
-                    mouseWheelFunctionUp = mouseWheelFunctionUp ||
-                        _.throttle(throttleFn, scope.snapDuration, {leading: true, trailing: false});
-
-                    mouseWheelFunctionUp();
-
-                    function throttleFn() {
-                        e.preventDefault();
-                        if (snapUp(e)) {
-                            e.stopPropagation();
-                        }
-                    }
-                }
-
-                function throttleWheelDown(e) {
-                    e.preventDefault();
-                    mouseWheelFunctionDown = mouseWheelFunctionDown ||
-                        _.throttle(throttleFn, scope.snapDuration, {leading: true, trailing: false});
-
-                    mouseWheelFunctionDown();
-
-                    function throttleFn() {
-                        e.preventDefault();
-                        if (e.deltaY > 0 && snapDown(e)) {
-                            e.stopPropagation();
-                        }
-                    }
                 }
 
                 function unbindWheel() {
